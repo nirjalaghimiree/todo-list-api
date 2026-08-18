@@ -1,0 +1,134 @@
+{
+  "info": {
+    "_postman_id": "6f2f0f8a-2a87-4b6f-9f87-8d4b9e2a1001",
+    "name": "To-Do List REST API",
+    "description": "Postman collection for the To-Do List REST API. Includes Create, Get All, Filter, Get One, Update, Delete, validation, and 404 examples.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "taskId",
+      "value": "REPLACE_WITH_TASK_ID"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Create Task",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Complete REST API Assignment\",\n  \"description\": \"Build and test the To-Do List REST API\",\n  \"isCompleted\": false,\n  \"dueDate\": \"2026-08-25\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/api/tasks"
+      }
+    },
+    {
+      "name": "2. Create Task - Validation Error",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"description\": \"This task intentionally has no title\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/api/tasks"
+      }
+    },
+    {
+      "name": "3. Get All Tasks",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/tasks"
+      }
+    },
+    {
+      "name": "4. Get Completed Tasks",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/tasks?completed=true"
+      }
+    },
+    {
+      "name": "5. Get Incomplete Tasks",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/tasks?completed=false"
+      }
+    },
+    {
+      "name": "6. Get One Task",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/tasks/{{taskId}}"
+      }
+    },
+    {
+      "name": "7. Get Non-Existing Task - 404",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/tasks/507f1f77bcf86cd799439011"
+      }
+    },
+    {
+      "name": "8. Update Task",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Complete REST API Assignment Successfully\",\n  \"isCompleted\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/api/tasks/{{taskId}}"
+      }
+    },
+    {
+      "name": "9. Delete Task",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{baseUrl}}/api/tasks/{{taskId}}"
+      }
+    }
+  ]
+}
