@@ -12,6 +12,7 @@ const createTask = async (req, res, next) => {
         }
 
         const task = await Task.create({
+            user: req.user._id,
             title,
             description,
             isCompleted,
@@ -29,7 +30,9 @@ const createTask = async (req, res, next) => {
 // GET ALL TASKS
 const getTasks = async (req, res, next) => {
     try {
-        const filter = {};
+        const filter = {
+            user: req.user._id
+        };
 
         if (req.query.completed !== undefined) {
             if (
@@ -41,10 +44,13 @@ const getTasks = async (req, res, next) => {
                 });
             }
 
-            filter.isCompleted = req.query.completed === "true";
+            filter.isCompleted =
+                req.query.completed === "true";
         }
 
-        const tasks = await Task.find(filter);
+        const tasks = await Task.find(filter).sort({
+            createdAt: -1
+        });
 
         res.status(200).json(tasks);
 
@@ -57,7 +63,10 @@ const getTasks = async (req, res, next) => {
 // GET ONE TASK
 const getTaskById = async (req, res, next) => {
     try {
-        const task = await Task.findById(req.params.id);
+        const task = await Task.findOne({
+            _id: req.params.id,
+            user: req.user._id
+        });
 
         if (!task) {
             return res.status(404).json({
@@ -76,14 +85,20 @@ const getTaskById = async (req, res, next) => {
 // UPDATE TASK
 const updateTask = async (req, res, next) => {
     try {
-        if (req.body.title !== undefined && req.body.title.trim() === "") {
+        if (
+            req.body.title !== undefined &&
+            req.body.title.trim() === ""
+        ) {
             return res.status(400).json({
                 message: "Title cannot be empty"
             });
         }
 
-        const task = await Task.findByIdAndUpdate(
-            req.params.id,
+        const task = await Task.findOneAndUpdate(
+            {
+                _id: req.params.id,
+                user: req.user._id
+            },
             req.body,
             {
                 new: true,
@@ -108,7 +123,10 @@ const updateTask = async (req, res, next) => {
 // DELETE TASK
 const deleteTask = async (req, res, next) => {
     try {
-        const task = await Task.findByIdAndDelete(req.params.id);
+        const task = await Task.findOneAndDelete({
+            _id: req.params.id,
+            user: req.user._id
+        });
 
         if (!task) {
             return res.status(404).json({

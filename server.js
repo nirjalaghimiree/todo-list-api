@@ -1,8 +1,12 @@
 require("dotenv").config();
 
 const express = require("express");
+const cors = require("cors");
 const connectDB = require("./config/db");
+
 const taskRoutes = require("./routes/taskRoutes");
+const authRoutes = require("./routes/authRoutes");
+
 const errorHandler = require("./middleware/errorMiddleware");
 
 const app = express();
@@ -10,10 +14,14 @@ const app = express();
 // Connect to MongoDB
 connectDB();
 
-// Middleware for JSON request bodies
+// Middleware
+app.use(cors());
 app.use(express.json());
 
-// API Routes
+// Authentication Routes
+app.use("/api/auth", authRoutes);
+
+// Task Routes
 app.use("/api/tasks", taskRoutes);
 
 // Test Route
@@ -23,7 +31,7 @@ app.get("/", (req, res) => {
     });
 });
 
-// Global Error Handling Middleware
+// Global Error Handler
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
